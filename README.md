@@ -213,6 +213,7 @@ The generation of this data is described below.
 The network trained by '*/train*' is stored here.
 
 #### [data.html](templates/data.html)
+html page which facilitaties the data upload and display as described by the /data route.
 
 #### [index.html](templates/index.html)
 
