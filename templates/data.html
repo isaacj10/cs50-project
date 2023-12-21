@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+{% block title %}
+    Data Management
+{% endblock %}
+
+{% block main %}
+<body>
+    <div class="header">
+        <h2>Patient Database</h2>
+    </div>
+    <div class="section">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <p>The current patient database can be seen below. The database is stored in a .db file on the server-side.</p>
+                        <p>Administrative staff can add patients to the database by uploading a .csv file of new patient information. The uploading process ensures that duplicate patients (i.e. with the same ID) are not added.</p>
+                        <p></p>
+                    </td>
+                    <td>
+                        <p>Note that for binary variables, "1" indicates the presence of an abnormality, whereas "0" indicates it is absent/normal.</p>
+                    </td>
+                    <td>
+                        <p>Choose csv file to upload</p>
+                        <form method="POST" enctype="multipart/form-data" action="/data">
+                            <input type="file" name="file" accept=".csv">
+                            <input type = "submit" value="Upload">
+                        </form>
+                    </td>
+                    <td>
+                        <p></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <div class="section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patient ID</th>
+                        <th>Temp (Celcius)</th>
+                        <th>O2 sat (%)</th>
+                        <th>Auscultation</th>
+                        <th>CRP</th>
+                        <th>WCC (10^9/dL)</th>
+                        <th>Age (Years)</th>
+                        <th>News 2 Score</th>
+                        <th>Cardiac Disease</th>
+                        <th>COPD</th>
+                        <th>Renal Failure</th>
+                        <th>Charlson Comorbidity Index</th>
+                        <th>Sex (M/F)</th>
+                        <th>Obesity</th>
+                        <th>Immunosuppression</th>
+                        <th>Diabetes</th>
+                        <th>Neurological Disorder</th>
+                        <th>ICU Admission (1 = Yes, 0 = No)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in patient_database %}
+                    <tr>
+                        <td>{{ patient["ID"] }}</td>
+                        <td>{{ patient["temperature"] }}</td>
+                        <td>{{ patient["oxygen_saturation"] }}</td>
+                        <td>{{ patient["lung_auscultation"] }}</td>
+                        <td>{{ patient["crp"] }}</td>
+                        <td>{{ patient["white_cell_count"] }}</td>
+                        <td>{{ patient["age"] }}</td>
+                        <td>{{ patient["news_2_score"] }}</td>
+                        <td>{{ patient["heart_disease"] }}</td>
+                        <td>{{ patient["copd"] }}</td>
+                        <td>{{ patient["renal_failure"] }}</td>
+                        <td>{{ patient["charlson_index"] }}</td>
+                        <td>{{ patient["sex"] }}</td>
+                        <td>{{ patient["obesity"] }}</td>
+                        <td>{{ patient["immunosuppression"] }}</td>
+                        <td>{{ patient["diabetes"] }}</td>
+                        <td>{{ patient["neurological_disorder"] }}</td>
+                        <td>{{ patient["icu"] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+{% endblock %}

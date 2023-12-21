@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Train
+{% endblock %}
+
+{% block main %}
+    <div class="header">
+        <h2>Train the predictive algorithm</h2>
+    </div>
+    <div class="container">
+        <div class="section">
+            <p>
+                This page enables you to set the training parameters for the predictive neural network. This network's goal is to make an accurate binary prediction about the risk of a known COVID-19 positive patient rewquiring ICU-level care.
+            </p>
+            <p>
+                The neural network is a three layer dense neural network (with an additional binary output layer), with learning rate, regularisation and prediction threshold as set below, along with the specified number of neurons in the inpur layer.
+            </p>
+            <p>
+                The network will train on the patient database which can be reached through the 'Data' tab. Please note that altering the database will not tiself re-train the neural network - this can only be done through this page.
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <form action="/train" method="post">
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Learning Rate</th>
+                            <th>Number Neurons in Input Layer</th>
+                            <th>Regulariser</th>
+                            <th>Threshold (Cut-Off for Binary Prediction)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="learning_rate" name="learning_rate" placeholder="Learning Rate (default: 0.01)" type="text" value="0.01">
+                            </td>
+                            <td>
+                                <input autocomplete="off" class="form-control mx-auto w-auto" id="input_neurons" name="input_neurons" placeholder="Neurons in Input Layer (default: 10)" type="text" value="10">
+                            </td>
+                            <td>
+                                <input autocomplete="off" class="form-control mx-auto w-auto" id="regulariser" name="regulariser" placeholder="Regulariser (default: 0.01)" type="text" value="0.01">
+                            </td>
+                            <td>
+                                <input autocomplete="off" class="form-control mx-auto w-auto" id="threshold" name="threshold" placeholder="Prediction Threshold (default: 0.5)" type="text" value="0.5">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            <button class="btn btn-primary" type="submit">Train Neural Network</button>
+        </form>
+    </div>
+{% endblock %}

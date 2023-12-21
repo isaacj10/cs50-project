@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register New Staff
+{% endblock %}
+
+{% block main %}
+<div class="header">
+    <h2>Staff Database Management</h2>
+</div>
+<div class="container">
+    <p>
+        Add or delete staff members from the staff registry.
+    </p>
+    <p>
+        New staff added to the database will be required to set up their account and personal password before they can access the site.
+    </p>
+    <p>
+        Access privilages differ depending on account type. Software Engineer accounts can only access the Neural Network Training page, whilst Administrative Staff can only access the patient database page. Master Access accounts can access both these pages, along with this Staff Database Page.
+    </p>
+    <p>
+        Deleting any staff will also remove any registered account associated with the username
+    </p>
+<div class="section">
+    <form action="/staff" method="post"></form>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        <p>Enter user details along with action</p>
+                        <p>(enter into or delete from staff registry)</p>
+                    </th>
+                    <th>
+                        <p>Confirm Master Account details</p>
+                        <p>(must be same account as the one currently logged in)</p>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="mb-3">
+                            <label for="action">Select Action:</label>
+                            <select id="action" name="action" onchange="toggleFormFields()">
+                                <option value="enter_user">Enter New User</option>
+                                <option value="delete_user">Delete Existing User</option>
+                            </select>
+                        </div>
+                        <div id="new_user_fields" class="section">
+                            <div class="mb-3">
+                                <div class="mb-3">
+                                    <label for="status">New User Account Type:</label>
+                                </div>
+                                <p><label><input type="radio" id="engineer" name="new_status" value="engineer">Machine Learning Engineer</label></p>
+                                <p><label><input type="radio" id="admin" name="new_status" value="admin">Administrative Use</label></p>
+                                <p><label><input type="radio" id="master" name="new_status" value="master">Master Access</label></p>
+                            </div>
+                            <div class="mb-3">
+                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="staff_username" name="staff_username" placeholder="New User's Username" type="text">
+                            </div>
+                        </div>
+                        <div id="delete_user_fields" class="section" style="display: none;">
+                            <div class="mb-3">
+                                <div class="mb-3">
+                                    <label for="status">Delete User Account Type:</label>
+                                </div>
+                                <p><label><input type="radio" id="engineer" name="delete_status" value="engineer">Machine Learning Engineer</label></p>
+                                <p><label><input type="radio" id="admin" name="delete_status" value="admin">Administrative Use</label></p>
+                                <p><label><input type="radio" id="master" name="delete_status" value="master">Master Access</label></p>
+                            </div>
+                            <div class="mb-3">
+                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="delete_staff_username" name="delete_staff_username" placeholder="Delete User" type="text">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="section">
+                            <div class="mb-3">
+                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="master_username" name="master_username" placeholder="Your Username" type="text">
+                            </div>
+                            <div class="mb-3">
+                                <input class="form-control mx-auto w-auto" id="master_password" name="master_password" placeholder="Your Password" type="password">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-primary" type="submit">Add/Remove Staff</button>
+    </form>
+</div>
+<div class="container">
+    <div class="section">
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Account Type</th>
+                    <th>Registration Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in existing_staff %}
+                <tr>
+                    <td>{{ user["username"] }}</td>
+                    <td>{{ user["status"] }}</td>
+                    <td>{{ user["registered"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='staff-script.js') }}"></script>
+{% endblock %}

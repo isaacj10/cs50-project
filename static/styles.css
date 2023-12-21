@@ -1,0 +1,96 @@
+/* Size for header */
+nav .navbar-brand
+{
+    font-size: x-large;
+}
+
+/* copied from Bootstrap so that background colour could be customised here: <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> */
+@media (min-width:992px) {
+    .navbar-expand-lg {
+        flex-wrap:nowrap;
+        justify-content:flex-start;
+        background-color: rgb(27, 177, 147);
+        font-family: Facit,Calibri,Helvetica,sans-serif!important;
+        color: #fff;
+    }
+
+    .navbar-expand-lg .navbar-nav {
+        flex-direction:row;
+    }
+
+    .navbar-expand-lg .navbar-nav .dropdown-menu {
+        position:absolute;
+    }
+
+    .navbar-expand-lg .navbar-nav .nav-link {
+        padding-right:var(--bs-navbar-nav-link-padding-x);
+        padding-left:var(--bs-navbar-nav-link-padding-x);
+    }
+
+    .navbar-expand-lg .navbar-nav-scroll {
+        overflow:visible;
+    }
+
+    .navbar-expand-lg .navbar-collapse {
+        display:flex!important;flex-basis:auto;
+    }
+
+    .navbar-expand-lg .navbar-toggler {
+        display:none;
+    }
+
+    .navbar-expand-lg .offcanvas {
+        position:static;
+        z-index:auto;
+        flex-grow:1;
+        width:auto!important;
+        height:auto!important;
+        visibility:visible!important;
+        background-color:transparent!important;
+        border:0!important;
+        transform:none!important;
+        transition:none;
+    }
+
+    .navbar-expand-lg .offcanvas .offcanvas-header {
+        display:none;
+    }
+
+    .navbar-expand-lg .offcanvas .offcanvas-body {
+        display:flex;
+        flex-grow:0;
+        padding:0;
+        overflow-y:visible;
+    }
+
+}
+
+table {
+    background-color: transparent;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+table th,
+table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+tbody tr:nth-of-type(odd) {
+    background-color: rgb(179, 208, 255, 0.3)
+}
+
+.section {
+    padding-bottom: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 0.5rem;
+}
+
+.header {
+    padding-bottom: 3rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 2rem;
+}

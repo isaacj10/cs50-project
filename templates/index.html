@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <div class="section">
+            <h2>SARS-COVID-19 Risk of ICU Admission Calculator</h2>
+            <p>
+                For use in patients with confirmed COVID-19 to assess risk of ICU admission
+            </p>
+            <p>
+                Patients with severe COVID-19 are indicated for additional antiviral and steroid therapy - such therapy may be guided by this calculation*
+            </p>
+            <p>
+                Intensive Care Unit beds are limited across the hospital network and the identification of patients likely to require ICU-level care will aid in bedflow planning
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <form action="/" method="post">
+                            <div class="mb-3">
+                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="temperature" name="temperature" placeholder="Temperature: Degrees Celcius" type="text" value="">
+                            </div>
+                            <div class="mb-3">
+                                <input autocomplete="off" class="form-control mx-auto w-auto" id="oxygen_saturation" name="oxygen_saturation" placeholder="Oxygen Saturation (SpO2): %" type="text" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label><input type="radio" id="lung_auscultation" name="lung_auscultation" value="1">Lung Auscultation Abnormal</label>
+                                <label><input type="radio" id="lung_auscultation" name="lung_auscultation" value="0">Lung Auscultation Normal</label>
+                                <label><input type="radio" id="lung_auscultation" name="lung_auscultation" value="">Lung Auscultation Unknown</label>
+                            </div>
+                            <div class="mb-3">
+                                <input autocomplete="off" class="form-control mx-auto w-auto" id="CRP" name="CRP" placeholder="C-Reactive Protein (CRP): mg/dL" type="text" value="">
+                            </div>
+                            <div class="mb-3">
+                                <input autocomplete="off" class="form-control mx-auto w-auto" id="white_cell_count" name="white_cell_count" placeholder="White Cell Count: x10^9/L" type="text" value="" value="">
+                            </div>
+                            <div class="mb-3">
+                                <input autocomplete="off" class="form-control mx-auto w-auto" id="age" name="age" placeholder="Age: years" type="text" value="" value="">
+                            </div>
+                            <div class="mb-3">
+                                <input autocomplete="off" class="form-control mx-auto w-auto" id="news_2_score" name="news_2_score" placeholder="NEWS 2 Score: total, integer" type="text" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label><input type="radio" id="heart_disease" name="heart_disease" value="1">History of Cardiac Disease</label>
+                                <label><input type="radio" id="heart_disease" name="heart_disease" value="0">No Cardiac Disease</label>
+                                <label><input type="radio" id="heart_disease" name="heart_disease" value="">Cardiac History Unknown</label>
+                            </div>
+                            <div class="mb-3">
+                                <label><input type="radio" id="copd" name="copd" value="1">History of COPD</label>
+                                <label><input type="radio" id="copd" name="copd" value="0">No Diagnosed COPD</label>
+                                <label><input type="radio" id="copd" name="copd" value="">COPD History Unknown</label>
+                            </div>
+                            </div>
+                            <div class="mb-3">
+                                <label><input type="radio" id="renal_failure" name="renal_failure" value="1">History of Renal Failure</label>
+                                <label><input type="radio" id="renal_failure" name="renal_failure" value="0">No Diagnosed Renal Failure</label>
+                                <label><input type="radio" id="renal_failure" name="renal_failure" value="">Renal Failure History Unknown</label>
+                            </div>
+                            <div class="mb-3">
+                                <input autocomplete="off" class="form-control mx-auto w-auto" id="charlson_index" name="charlson_index" placeholder="Charlson Comorbidity Index: total, integer" type="text" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label><input type="radio" id="sex" name="sex" value="1">Male</label>
+                                <label><input type="radio" id="sex" name="sex" value="0">Female</label>
+                                <label><input type="radio" id="sex" name="sex" value="">Sex Unknown</label>
+                            </div>
+                            <div class="mb-3">
+                                <label><input type="radio" id="obesity" name="obesity" value="1">BMI Over 30</label>
+                                <label><input type="radio" id="obesity" name="obesity" value="0">BMI Under 30</label>
+                                <label><input type="radio" id="obesity" name="obesity" value="">BMI Unknown</label>
+                            </div>
+                            <div class="mb-3">
+                                <label><input type="radio" id="immunosuppression" name="immunosuppression" value="1">Significant Immunosuppression</label>
+                                <label><input type="radio" id="immunosuppression" name="immunosuppression" value="0">No Immunosuppression</label>
+                                <label><input type="radio" id="immunosuppression" name="immunosuppression" value="">Unkown</label>
+                            </div>
+                            <div class="mb-3">
+                                <label><input type="radio" id="diabetes" name="diabetes" value="1">Diagnosis of Diabetes Mellitus</label>
+                                <label><input type="radio" id="diabetes" name="diabetes" value="0">No Diagnosed Diabetes</label>
+                                <label><input type="radio" id="diabetes" name="diabetes" value="">Unknown</label>
+                            </div>
+                            <div class="mb-3">
+                                <label><input type="radio" id="neurological_disorder" name="neurological_disorder" value="1">Presence of Neurological Disorder</label>
+                                <label><input type="radio" id="neurological_disorder" name="neurological_disorder" value="0">No Diagnosed Neurological Disorders</label>
+                                <label><input type="radio" id="neurological_disorder" name="neurological_disorder" value="">Neurological History Unknown</label>
+                            </div>
+                        </form>
+                    </td>
+                    <td>
+                        <div class="container">
+                            <div class="section">
+                                <h3>Prediction of ICU Admission Requirement:</h3>
+                                <h2 id="binary_predict"></h2>
+                            </div>
+                            <div class="section"></div>
+                                <h3>Relative Risk (Probability):</h3>
+                                <p id="probability">
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <div class="section">
+                                <p>
+                                    *This calculator is not validated and should not be used as a guide for COVID-19 therapy. Please consult local guidelines.
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="{{ url_for('static', filename='index-script.js') }}"></script>
+
+{% endblock %}
