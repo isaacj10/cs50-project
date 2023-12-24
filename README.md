@@ -1,5 +1,5 @@
 # TITLE: MBBS CALC
-#### Video Demo:  <URL HERE>
+#### Video Demo:  https://youtu.be/6g27A4dgyhg
 #### Description:
 See below!
 
@@ -193,12 +193,14 @@ Two functions are performed by this route, via page data.html:
 1. For both GET and POST submissions, the page displays a full list of the patient database - with features shown for all patients. Patients are identified only by their ID.
 2. For a POST submission, the route permits uploading of a .csv file with additional patients to add to the training database. The route will check each row to ensure it is not a duplicate of an existing patient ID before it adds it to the database.
 
+I actually found it embarrasingly difficult to design the .csv upload route as it had been some time since I had worked with file reader functions and struggled to design the .html form which would accept a .csv file - thankfully with the aid of google and stack exchange I was able to resolve this issue!
+
 Whilst the .csv file has to have the same headings as the **patient_database** table for this upload to work, based on my experience working with real hospitals it is assumed that any patient data report exported to .csv will have a consistent format, meaning the handling of unique data formats is unnecessary.
 
 ##### /staff: Displays list of staff and active (registered) users; enables master account(s) to add/delete staff from database
 The final route of the app.py file actions staff.html - displaying existing staff and allowing master accounts to edit this staff list.
 
-Thisn route will show the user a table of all existing staff (that is, usernames authorised to create an account) and their corresponding account type (access privileges). It also displays whether or not the user has created an account: It does this by appending a row to the **staff** table by checking if the staff ID is present in the **users** table, and displaying 'Registered' if so. This function is performed for both GET and POST requests.
+This route will show the user a table of all existing staff (that is, usernames authorised to create an account) and their corresponding account type (access privileges). It also displays whether or not the user has created an account: It does this by appending a row to the **staff** table by checking if the staff ID is present in the **users** table, and displaying 'Registered' if so. This function is performed for both GET and POST requests.
 
 When a POST request is actioned, the route checks the form to ensure the user has correctly filled it out - choosing an existing staff member to remove or a new staff member to add - and then checks the user's username, password and session login details to ensure these match and are linked to a *master* account type. Once this occurs, the corresponding change to the **staff** table occurs - and if a user is deleted, they are removed from the **users** table too.
 
@@ -213,27 +215,69 @@ The generation of this data is described below.
 The network trained by '*/train*' is stored here.
 
 #### [data.html](templates/data.html)
-html page which facilitaties the data upload and display as described by the /data route.
+This login-protected page can only be accessed by two of the three account types - 'master' and 'admin' accounts.
+This is designed to mimic a real-world situation where only registered hospital staff have access to sensitive patient data, with external software enginners unable to view the direct patient data.
+This page is essential for a real life use case for this web app, as it is important to both see the raw data which is being used to train the neural network (for the sake of transparenct or analysis/alteration such as prinicpal component analysis or feature engineering) and be able to amend the database with additional examples.
+
+The page has two functions: the display of the existing patient database (in full; at the bottom of the page) and a form which allows uploading of a .csv file to extend the patient database.
+As described above in the */data* route, the patient database is stored as a SQL table in the *database.db* file. It is this table which is added to by the .csv upload form (again, described above) and this same table that is used to fill out the database display on data.html.
 
 #### [index.html](templates/index.html)
+This page displays the ICU admission risk calculator, as performed by the neural network trained on the data uploaded and presented via the *data.html* page and with parameters as chosen via the *train.html* page, with calculations conducted in real-time via the *index-script.js* AJAX script (which itself calls the */process_array* route) to present results to the user.
+
+The calculator is structured as a mixed .html form with radio button and text input in the left-hand block of the page, and the output in the right-hand block of the page. I (crudely) used the "<table>" element to break the page into two horizontally-adjacent boxes.
+
+This form then calculates a binary prediction of whether or not a patient should be admitted to ICU (i.e. if the probability exceeds the pre-specified threshold value) and displays this on the page.
+I also elected to display (in a smaller font size) the probability as well - I think this information is relevant to a doctor/user of this application and provides context to the binary prediction itself.
+
+Most of the functionality of this page has been explained by the routes above - the form itself is very basic, but again this mimics the inspiraton of MDCalc and is deliberately designed to be supremely easy for a user to navigate.
 
 #### [layout.html](templates/layout.html)
+Similarly to the previous cs50 finance assigment, displays *index*, *login* and *register* routes to the "un-logged-in" user and displays *index*, *data*, *train*, *staff* and *logout* routes to the logged-in user, using the session variable to discern 1. whether a user is logged in and 2. what that user's account type is (for login-protected pages).
+
+Also holds a logo picture (see below!) in the header, and in the footer references MDCalc as inspiration.
 
 #### [login.html](templates/login.html)
+Very similar to finance assignment: a simple form for username and password.
 
 #### [register.html](templates/register.html)
+Again very similar to finance assigment, however with additonal functionality as described in the */register* route above.
 
 #### [staff.html](templates/staff.html)
+Described in the */staff/* route; this pages shows the user a table of all existing staff (that is, usernames authorised to create an account) and their corresponding account type (access privileges). It also displays whether or not the user has created an account: It does this by appending a row to the **staff** table by checking if the staff ID is present in the **users** table, and displaying 'Registered' if so.
+
+Above this, it includes a form which a master account type can use to edit the staff database (that is, alter the **staff** table in the *database.db*) - the form has a dropdown element which prompts the user to ask whether they want to add or delete a staff member from the database, and then asks for the username and account type for this new (or existing member) to add (or delete) this user.
+The master account then has to enter their login credentials to validate them as a master user before the form will be actioned successfully.
 
 #### [train.html](templates/train.html)
+As described in the */train* route, in this page the user (in this case, someone logged in under the 'engineer' or 'master' acount type) can then alter a number of parameters to affect how the neural network is trained and structured.
+This .html page has a 4-item text input form which allows the user to enter a custom learning rate *(variable learning_rate)*, regulariser *(variable regulariser)*, number of neurons in the first layer (that is, the first layer after the input features themselves) *(variable shape)* and threshold (for the binary prediction value) *(variable threshold)*.
 
 #### [apology-script.js](static/apology-script.js)
+This script is used to render an apology message in the case of erroneous user input or bugs in the code. Rather than using the cs50 apology function from the finance assigment, I thought a pop-up message would be more user friendly, if perhaps more annoying. This was coded as *layout-script.js* as I wanted it to be run through the layout page to ensure the error message could appear on any of my .html pages, irrespective of the error.
+
+Like the apology function from cs50's finance assignment, this JS apology function takes a string input to display to the suer describing the type of error, but also takes "apology=true" as a Boolean variable before it is displayed. The default option is obviously that this message is not displayed as a part of the *layout.html* file.
 
 #### [index-script.js](static/index-script.js)
+Really proud of this JS file! Was my first true foray into asynchronous JavaScript and XML coding after it was discussed (but not truly demonstrated nor practiced) in week 9.
+I invested a lot of time in this as I wanted to be true to the MDCalc format of having calculations called in real-time according to user input, rather than the user having to enter ALL information and then reload the page to get an answer.
+
+This JS essentially takes the HTML elements from the form (all the individual text boxes and radio buttons) and turns them into an array which is transmitted in JSON format to the */process_array* route, which then returns a gussed probability of ICU admission and resulting binary decision, which the JS inserts into the .html page.
+1. It does this by first assigning a variable to each separate text box element and each group of three radio buttons (i.e. the "positive/present/1" value, the "negative/absent/0" value, and the "unsure/impute with average" value).
+2. The JS function then asks for the **scaler** table from the *database.db* table, which contains in its second column a list of the mean for each training feature – i.e. the average age, average oxygen saturation ,average temperature etc – of the patient database. This average data will be used in step 4 and 5 below to impute missing data.
+3. Whenever the user interacts with the form, the JS then conducts a check of each variable to see if it is empty or contains user input.
+4. If user input exists for a form element, the JS variable is set as equal to this input. Note that in the radio button cases, the “unsure” option is set as equal to the *average value of the patient database for this variable*.
+5. If however NO user input exists for a form element (as will necessarily be the case when this JS function is first called), the script sets the variable as equal to the *average value of the patient database for this variable*. This ensures a complete array can be passed to the neural network for a guess, but that values which the user does not provide will not alter the network’s guess. This imputation of missing data is a common convention for guessing and training neural networks.
+6. This complete arrayt is then passed to the */process_array* route, a guess is returned, and then entered into the *index.html* page.
 
 #### [layout-script.js](static/layout-script.js)
+This .js is an attempt to get the navigation bar to become a dropdown menu when the window is minimised/compressed.
 
 #### [staff-script.js](static/staff-script.js)
+This script just makes the *staff.html* form (for adding or deleting staff from the database) look more aesthetically appealing by including a function to hide the **delete staff** elements when a user is entering new staff into the database, and vice-versa for when they perform the opposite action.
+A dropdown menu activates the script which sets the respective .html block to hidden.
+
+In this way, the form only allows the user to conduct one action at any one time.
 
 #### [mbbs.jpg](static/mbbs.jpg)
 A nice little logo of my web app, indended to pay homage to MDCalc.
@@ -303,13 +347,81 @@ Whilst wanting to maintain the humour of cs50's apology page for the finance pro
 ### Security: Two-Tiered Structure
 
 #### Staff Database and User Database: Authentication Required
+This "double database" is a form of Two-Factor Authetication to ensure that unknown users cannot sign up to the site and access the (theoretically confidential) patient database or alter the trained neural network.
+
+Firstly, the **staff** table: this table can only be altered by users whose account type is *master*, meaning ordinary registered users (and non-registered users) cannot edit this table.
+The **staff** table is a list of all staff who are *permitted to register an account themselves*, though users who are listed on this table but have not yet registered an account themselves do not have access to the login-protected parts of this web app.
+
+Secondly, the **users** table: this table is very similar to the users table from the cs50 finance assignment, except that it has *a column which references the primary key of the **staff** table*, linking the two tables together.
+
+As a reminder, the **staff** table and **users** table is set up as below:
+```
+CREATE TABLE staff (
+    ID INTEGER PRIMARY KEY,
+    username TEXT,
+    status TEXT
+);
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY,
+    staffid INTEGER REFERENCES staff(ID),
+    hash TEXT
+);
+```
+For example, for a staff list with two users, both of which have independently registered an account themselves afterwards, may look as follows:
+```
+STAFF table
++----+----------+----------+
+| ID | username |  status  |
++----+----------+----------+
+| 1  | isaac    | master   |
+| 2  | david    | engineer |
++----+----------+----------+
+USERS table
++----+---------+--------------------------------------------------------------------------------------------------------+
+| id | staffid |                                                  hash                                                  |
++----+---------+--------------------------------------------------------------------------------------------------------+
+| 1  | 1       | pbkdf2:sha256:600000$hCHYOAYlv0PkDDUh$914bb73a224fca2e84e0e9ae716d3156a3f78406a814985e30515537d019faef |
+| 2  | 2       | pbkdf2:sha256:600000$zDZiBqtJgRvNVnI0$003a43eed315609d1cc14953c789b77b50cc87041c18671b14a5838a00536c32 |
++----+---------+--------------------------------------------------------------------------------------------------------+
+```
+Following the above example, if user "isaac", as a *master* user, has recruited a new administrative staff member "carter" and needs to add him to the database:
+- Now, if “carter” tried to register his account at this stage, he would receive an apology message and be unable to register.
+- "isaac" would then login and navigate to the *staff.html* page. He would then submit a form to add "carter" to the **staff** table:
+```
+Dropdown menu - action: Enter New Staff
+Text entry - username: carter
+Radio buttons – account type: admin
+```
+Submission of this form via the post route would then append the **staff** table to look as below:
+```
++----+----------+----------+
+| ID | username |  status  |
++----+----------+----------+
+| 1  | isaac    | master   |
+| 2  | david    | engineer |
+| 2  | carter   | admin    |
++----+----------+----------+
+```
+Only then can user "carter" use the */register* route via the *register.html* page to successfully enter his username and a unique password to create an account - adding himself to the **users** table, and enabling him to access the login-protected *data.html* but NOT the login protected *train.html* nor *staff.html* pages, due to his limited privileges as an *admin* accout type.
+
+The process of having a master accounts list, which controls which usernames can sign up and then what privileges those accounts will have, and then making a new user still register themselves with a unique password which only they can see, has been inspired by my current situation of recently graduating from medical school and beginning as a doctor. In this role, I have had my account username emailed to me by the hospital administration staff but have still needed to register my new account myself.
 
 #### Software Engineer vs Administrative Access
+Having two different account types under the master account type wasn't strictly necessary but was chosen to both add a layer of complexity to this assignment, add security to the web app and mirror the real-life scenario of data management in the health industry, where sensitive data is not shared to all staff members.
 
 #### Master Access
+Master access was itself necessary to amend the patient database but does represent a potential security flaw in the web app construction. Some of this is mitigated by the action of */staff* - the route requires the user to re-enter their master credentials and checks these against both the session variable AND the **staff** table before altering the table.
 
 # Applicability: Relevant to Real Practice
 
-### Future Research Direction
+### Future Research and Development Direction
+This web app potentially represents the future of MDCalc and other similar sites, as AI and deep learning technqiues are increasingly utilised within medicine.
+Although this comes with a big disclaimer as I used synthetic data with clear biases for this assigment, it is likely that neural networks will allow the interpretation of real trends in real databases within health. If a COVID-19 ICU risk predictor can be useful in medicine, then why can't any binary (or categorical) decision be supported in a similar manner?
+Already we are seeing the use of neural networks in assessing a patient's risk of heart attack in the emergency department - I imagine such tools will be increasingly available to help us doctors deal with the increased demands of healthcare as described above.
 
-### Use Of Similar Web Application
+The fact I could develop this (even very basic) application during this assignment shows that similar applications can be made locally on a hospital-by-hospital basis to make use of local databases (which are already "fine-tuned" to the local populaton).
+
+More concretely, as I look to continue my research in AI in medicine, it may be that I champion the development of this very application type here in Australia to be used locally, nationally or internationally.
+
+Thanks to cs50 for the opportunity to work on such a fun assignment!
